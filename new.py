@@ -1,3 +1,5 @@
+print('For chacking')
+
 import requests
 from SCRIP_For_Clean_Tags import search_TAGS
 
