@@ -1,4 +1,4 @@
-print('For chacking')
+print('and For chacking')
 
 import requests
 from SCRIP_For_Clean_Tags import search_TAGS
@@ -24,8 +24,7 @@ while response.json()['items']:
     print('ok')
     c=0
     for item in response.json()['items']:
-        
-        # обрабатываем каждую вакансию, например, выводим заголовок
+##    Вывод заголовка        
 ##        print(item['id'])
 
 ##        if item['id'] == '89400788':
