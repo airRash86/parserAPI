@@ -9,6 +9,18 @@ def checkModeAndAmoLaunch():
     return mode.get('mode'), mode.get('amoLaunches')
 
 
+def zeroCurNumTgShipTime():
+    '''
+    Resetting the number of job postings to Telegram completed since the last session at a time
+    '''
+    with open('app_elems.json', 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    data["numCurSend"] = 0
+
+    with open('app_elems.json', 'w', encoding='utf-8') as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+
+
 def bigReqToApiHh(page=0):
     params = {
         'text': 'Python программист',
@@ -32,6 +44,7 @@ if __name__ == '__main__':
     print(type(check_mode[1]))
     # There can be two modes: 1 - you can poll the api; 2 - a temporary pause
     if check_mode[0] == 1:
+        zeroCurNumTgShipTime()
         responseToApi = bigReqToApiHh()
         print(responseToApi.json()['page'], len(responseToApi.json()['items']))
 ##        print(responseToApi.json()['pages'], type(responseToApi.json()['pages']))
