@@ -1,3 +1,5 @@
+print('Проверочный принт')
+
 import requests
 import json
 import sys
