@@ -3,7 +3,10 @@ print('Проверочный принт')
 import requests
 import json
 import sys
+import pprint
 from SCRIP_For_Clean_Tags import search_TAGS
+
+
 
 def checkModeAndAmoLaunch():
     with open('app_elems.json', 'r', encoding='utf-8') as in_json:
@@ -33,11 +36,14 @@ def bigReqToApiHh(page=0):
     } # 'noExperience'
     response = requests.get('https://api.hh.ru/vacancies', params=params)
     return response
-##    print(sys.getsizeof(response.json()))
-##    for i in response.json():
-##        print(i)
-##    print('Номер стр при первом запросе: ',response.json()['page'])
-##    print('Номер стр при первом запросе: ',response.json()['pages'])
+
+
+def slidingOnVacancies(resFromApi):
+    pp = pprint.PrettyPrinter(width=40, compact=True)
+##    pp.pprint(resFromApi.json()['items'])
+    for i in resFromApi.json()['items']:
+        print(i['id'])
+##    print(resFromApi.json())
 
 
 
@@ -49,10 +55,15 @@ if __name__ == '__main__':
         zeroCurNumTgShipTime()
         responseToApi = bigReqToApiHh()
         print(responseToApi.json()['page'], len(responseToApi.json()['items']))
+        slidingOnVacancies(responseToApi)
 ##        print(responseToApi.json()['pages'], type(responseToApi.json()['pages']))
-        for page in range(1, responseToApi.json()['pages']):
-            responseToApi = bigReqToApiHh(page)
-            print(page, responseToApi.json()['page'], len(responseToApi.json()['items']))
+
+
+##        for page in range(1, responseToApi.json()['pages']):
+##            responseToApi = bigReqToApiHh(page)
+##            print(page, responseToApi.json()['page'], len(responseToApi.json()['items']))
+
+
 ##        while responseToApi.json()['items']:
 ##            c = 0
 ##            for vac in responseToApi.json()['items']:
