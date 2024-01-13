@@ -3,10 +3,18 @@ print('Проверочный принт')
 import requests
 import json
 import sys
+import sqlite3
 import pprint
 from SCRIP_For_Clean_Tags import search_TAGS
 
 
+
+STR = ['ВижнЛабс (VisionLabs)', 'SberTech', 'Компания 05.ру', 'Банк Открытие', 'ХОУМ Банк', 'СберМедИИ', 'Кухня на районе', 'ВкусВилл', 'СберМаркет', 'СБЕР', 'Альфа-Банк', 'РОСБАНК',
+       'Почта Банк', 'ПСБ (ПАО «Промсвязьбанк»)', 'Банк ДОМ.РФ', 'Газпромбанк', 'РНКБ Банк (ПАО)', 'РНКБ Банк (ПАО)', 'Банк ВТБ (ПАО)', 'Тинькофф', 'СберСпасибо', 'МСП Банк',
+       'БАНК УРАЛСИБ', 'Московская Биржа', 'Райффайзен Банк', 'Вкусно — и точка', 'SberAutoTech', 'Московский Кредитный Банк', 'Центральный банк Российской Федерации',
+       'Finstar Financial Group', 'Ренессанс cтрахование, Группа', 'ФинГрад', 'Ингосстрах Банк', 'Красное & Белое, розничная сеть', 'Россельхозбанк', 'ОТП Банк, АО (OTP bank)',
+       'СберЗдоровье', 'CarMoney', 'МТС Финтех', 'Бэнкс Софт Системс']
+INTEREST_vac_num = ['ВижнЛабс (VisionLabs)_89997213', 'ФГБУ Авиаметтелеком Росгидромета', 'BI.ZONE', 'NGENIX', '', ]
 
 def checkModeAndAmoLaunch():
     with open('app_elems.json', 'r', encoding='utf-8') as in_json:
@@ -39,13 +47,30 @@ def bigReqToApiHh(page=0):
 
 
 def slidingOnVacancies(resFromApi):
-    pp = pprint.PrettyPrinter(width=40, compact=True)
-##    pp.pprint(resFromApi.json()['items'])
+    c = 0
     for i in resFromApi.json()['items']:
-        print(i['id'])
+        c += 1
+        print(i['employer']['name'])
+
+##        if i['id'] == '91379400':
+##            pp = pprint.PrettyPrinter(width=40, compact=True)
+##            pp.pprint(i) #(resFromApi.json()['items'])
+##            print(i)
+        checkVacNum = isVacNumAlreadyInDB(i['id'])
+##        print(i['id'], type(i['id']))
 ##    print(resFromApi.json())
+    print(c)
 
-
+def isVacNumAlreadyInDB(vacId):
+    connection = sqlite3.connect('DBbigForNumsAndOthers.db')
+    cursor = connection.cursor()
+    cursor.execute('''SELECT COUNT(*) FROM numsVerVacas WHERE numVacs = ?''', (vacId,))
+    count = cursor.fetchone()[0]
+    if count == 0:
+        cursor.execute('''INSERT INTO numsVerVacas (numVacs) VALUES (?)''', (vacId,))
+        print(F"elem {vacId} added")
+    connection.commit()
+    connection.close()
 
 if __name__ == '__main__':
     check_mode = checkModeAndAmoLaunch()
@@ -59,8 +84,9 @@ if __name__ == '__main__':
 ##        print(responseToApi.json()['pages'], type(responseToApi.json()['pages']))
 
 
-##        for page in range(1, responseToApi.json()['pages']):
-##            responseToApi = bigReqToApiHh(page)
+        for page in range(1, responseToApi.json()['pages']):
+            responseToApi = bigReqToApiHh(page)
+            slidingOnVacancies(responseToApi)
 ##            print(page, responseToApi.json()['page'], len(responseToApi.json()['items']))
 
 
