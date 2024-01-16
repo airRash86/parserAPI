@@ -1,5 +1,6 @@
 на vps в стартовом каталоге папка KROLIKKK
 
+<<<<<<< HEAD
 krolikFORapiHH
 
 nano /etc/systemd/system/krolikFORapiHH.service
@@ -14,3 +15,6 @@ sudo systemctl enable PROJECT_NAME
 
 Если даже сделать connection.close() в обернутом Кролике (в SYSTEMD ), то он его перезапустит:  нужно тормозить SYSTEMD сам 
 
+=======
+krolikFORapiHH.service
+>>>>>>> f0630ecccb07ddd035a8f534347630aee3f1d841

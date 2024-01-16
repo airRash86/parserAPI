@@ -9,12 +9,11 @@ from SCRIP_For_Clean_Tags import search_TAGS
 
 
 
-STR = ['ВижнЛабс (VisionLabs)', 'SberTech', 'Компания 05.ру', 'Банк Открытие', 'ХОУМ Банк', 'СберМедИИ', 'Кухня на районе', 'ВкусВилл', 'СберМаркет', 'СБЕР', 'Альфа-Банк', 'РОСБАНК',
+STR = ['ВижнЛабс (VisionLabs)', 'SberTech', 'Банк Открытие', 'ХОУМ Банк', 'СберМедИИ', 'Кухня на районе', 'ВкусВилл', 'СберМаркет', 'СБЕР', 'Альфа-Банк', 'РОСБАНК',
        'Почта Банк', 'ПСБ (ПАО «Промсвязьбанк»)', 'Банк ДОМ.РФ', 'Газпромбанк', 'РНКБ Банк (ПАО)', 'РНКБ Банк (ПАО)', 'Банк ВТБ (ПАО)', 'Тинькофф', 'СберСпасибо', 'МСП Банк',
        'БАНК УРАЛСИБ', 'Московская Биржа', 'Райффайзен Банк', 'Вкусно — и точка', 'SberAutoTech', 'Московский Кредитный Банк', 'Центральный банк Российской Федерации',
        'Finstar Financial Group', 'Ренессанс cтрахование, Группа', 'ФинГрад', 'Ингосстрах Банк', 'Красное & Белое, розничная сеть', 'Россельхозбанк', 'ОТП Банк, АО (OTP bank)',
        'СберЗдоровье', 'CarMoney', 'МТС Финтех', 'Бэнкс Софт Системс']
-INTEREST_vac_num = ['ВижнЛабс (VisionLabs)_89997213', 'ФГБУ Авиаметтелеком Росгидромета', 'BI.ZONE', 'NGENIX', '', ]
 
 def checkModeAndAmoLaunch():
     with open('app_elems.json', 'r', encoding='utf-8') as in_json:
@@ -33,6 +32,17 @@ def zeroCurNumTgShipTime():
     with open('app_elems.json', 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
+def getBlockedEmployers():
+    conn = sqlite3.connect('DBbigForNumsAndOthers.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT namesStoppedEmployers FROM stoppedEmployers')
+    rows = cursor.fetchall()
+    namesBlockedEmployers = [row[0] for row in rows]
+    conn.close()
+    return namesBlockedEmployers
+    
+
+
 
 def bigReqToApiHh(page=0):
     params = {
@@ -50,7 +60,11 @@ def slidingOnVacancies(resFromApi):
     c = 0
     for i in resFromApi.json()['items']:
         c += 1
-        print(i['employer']['name'])
+
+##        if i['employer']['name'] == 'Компания 05.ру':
+##            pp = pprint.PrettyPrinter(width=40, compact=True)
+##            pp.pprint(i)
+            
 
 ##        if i['id'] == '91379400':
 ##            pp = pprint.PrettyPrinter(width=40, compact=True)
@@ -78,6 +92,7 @@ if __name__ == '__main__':
     # There can be two modes: 1 - you can poll the api; 2 - a temporary pause
     if check_mode[0] == 1:
         zeroCurNumTgShipTime()
+        blockedEmployers = getBlockedEmployers()
         responseToApi = bigReqToApiHh()
         print(responseToApi.json()['page'], len(responseToApi.json()['items']))
         slidingOnVacancies(responseToApi)
