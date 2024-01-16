@@ -1,1 +1,16 @@
 на vps в стартовом каталоге папка KROLIKKK
+
+krolikFORapiHH
+
+nano /etc/systemd/system/krolikFORapiHH.service
+systemctl start krolikFORapiHH.service
+
+При попытке обернуть кролика в SYSTEMD была моросня типа: Current command vanished from the unit file, execution of the command list won't be resumed.
+пофиксил: 
+sudo systemctl stop PROJECT_NAME
+sudo systemctl daemon-reload
+sudo systemctl start PROJECT_NAME
+sudo systemctl enable PROJECT_NAME
+
+Если даже сделать connection.close() в обернутом Кролике (в SYSTEMD ), то он его перезапустит:  нужно тормозить SYSTEMD сам 
+
